@@ -1,3 +1,6 @@
+#ifndef _TABLE_UTILS_
+#define _TABLE_UTILS_
+
 // STL
 #include <string.h>
 #include <stdio.h>
@@ -80,9 +83,10 @@ int remove_entry(Table* table, int id)
 }
 
 // Allocate and return a new table
-Table* getTable(char* tableName)
+Table* getTable(const char* tableName)
 {
     Table* newTable = malloc(sizeof(Table));
+    newTable->_tableName = malloc(strlen(tableName + 1));
 
     strcpy(newTable->_tableName, tableName);
     newTable->_numEntries = 0;
@@ -94,3 +98,5 @@ Table* getTable(char* tableName)
 
     return newTable;
 }
+
+#endif

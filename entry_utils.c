@@ -1,3 +1,6 @@
+#ifndef _ENTRY_UTILS_
+#define _ENTRY_UTILS_
+
 // STL
 #include <string.h>
 #include <stdio.h>
@@ -99,3 +102,5 @@ Entry* getEntry(int id, Entry* prev, Entry* next)
 
     return newEntry;
 }
+
+#endif

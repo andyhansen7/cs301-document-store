@@ -1,3 +1,6 @@
+#ifndef _FIELD_UTILS_
+#define _FIELD_UTILS_
+
 // STL
 #include <string.h>
 #include <stdio.h>
@@ -39,3 +42,5 @@ Field* getField(char fieldName, int fieldValue, Field* prev, Field* next)
 
     return newField;
 }
+
+#endif

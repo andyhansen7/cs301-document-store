@@ -3,9 +3,10 @@
 #include <unistd.h>
 
 #include "table_utils.c"
+#include "table_builder.c"
 
 int main(void)
 {
-    printf("Hello");
+    buildTable("db.txt", "db");
     return 0;
 }
