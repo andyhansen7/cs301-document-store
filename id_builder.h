@@ -1,0 +1,27 @@
+#ifndef _ID_BUILDER_
+#define _ID_BUILDER_
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct id_gen
+{
+    int current;
+} IDGen;
+
+int getNewID(IDGen* gen)
+{
+    int ret = gen->current;
+    gen->current++;
+    return ret;
+}
+
+IDGen* getIDGen()
+{
+    IDGen* gen = malloc(sizeof(IDGen));
+    gen->current = 0;
+
+    return gen;
+}
+
+#endif

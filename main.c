@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "table_utils.c"
+#include "table_utils.h"
 #include "table_builder.c"
 
 int main(void)
 {
-    buildTable("db.txt", "db");
+    Table* t = buildTable("db.txt", "db");
+    printTable(t);
     return 0;
 }

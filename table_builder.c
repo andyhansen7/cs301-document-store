@@ -1,7 +1,8 @@
 #ifndef _TABLE_BUILDER_
 #define _TABLE_BUILDER_
 
-#include "table_utils.c"
+#include "table_utils.h"
+#include "id_builder.h"
 
 #define MAX_TUPLE_LENGTH 1000
 
@@ -10,13 +11,14 @@ Table* buildTable(const char* fileName, const char* tableName)
     // Open file
     FILE* datafile = fopen(fileName, "r");
     char line[1000];
-    Table* table = getTable(tableName);
+    Table* table = getNewTable(tableName);
     char delim[] = " ";
-
-    fprintf(stderr, "Opened file, now reading...");
+    IDGen* generator = getIDGen();
 
     while(fgets(line, sizeof(line), datafile)) 
     {
+        fprintf(stderr, "Line read in: %s\n", line);
+        
         size_t eol = strcspn(line, "\n");
         line[eol] = '\0';
 
@@ -29,22 +31,37 @@ Table* buildTable(const char* fileName, const char* tableName)
 
         else if(strlen(line) < 2)
         {
-            fprintf(stderr, "Exiting after completing all requests!\n");
+            fprintf(stderr, "Exiting after reading all lines!\n");
 
             break;
         }
 
         // Populate table
-        char *ptr = strtok(line, delim);
+        int newID = getNewID(generator);
+        Tuple* newTuple = getNewTuple(newID);
 
-        while(ptr != NULL)
+        char *ptr_key = strtok(line, delim);
+        char *ptr_val = strtok(NULL, delim);
+
+        while(ptr_key != NULL && ptr_val != NULL)
         {
-            fprintf(stderr, "'%s'\n", ptr);
-            ptr = strtok(NULL, delim);
+            // Create entry
+            char key = ptr_key[0];
+            int val = atoi(ptr_val);
+
+            // Add field to tuple
+            updateTupleField(newTuple, key, val);
+
+            // // Get next values
+            ptr_key = strtok(NULL, delim);
+            ptr_val = strtok(NULL, delim);
         }
+
+        // Add new tuple to table
+        addTupleToTable(table, newTuple);
     }
 
-    return NULL;
+    return table;
 }
 
 #endif

@@ -1,0 +1,168 @@
+#ifndef _TUPLE_UTILS_
+#define _TUPLE_UTILS_
+
+#define TUPLE_ARRAY_SIZE 26
+
+#include <string.h>
+#include <ctype.h>
+#include <assert.h>
+
+typedef struct field_struct
+{
+    int value;
+    int valid;
+} Field;
+
+// Tuple type
+typedef struct tuple_struct
+{
+    Field data[TUPLE_ARRAY_SIZE];
+
+    struct tuple_struct* _next;
+    struct tuple_struct* _prev;
+} Tuple;
+
+// Create and return a new tuple
+Tuple* getNewTuple(int id)
+{
+    Tuple* newTuple = (Tuple*)malloc(sizeof(Tuple));
+    Field keyField;
+    keyField.value = id;
+    keyField.valid = 1;
+    newTuple->data[0] = keyField;
+    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++) 
+    {
+        newTuple->data[i] = (Field){.value = 0, .valid = 0};
+    }
+    newTuple->_next = NULL;
+    newTuple->_prev = NULL;
+
+    return newTuple;
+}
+
+void printTuple(Tuple* tuple)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    fprintf(stdout, "{\n\t_id(A): %d\n", tuple->data[0].value);
+
+    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
+    {
+        char label = i + 65;
+        if(tuple->data[i].valid) 
+        {
+            fprintf(stdout, "\t%c: %d\n", label, tuple->data[i].value);
+        }
+    }
+
+    fprintf(stdout, "}\n");
+}
+
+Field getDataByIndex(Tuple* tuple, int index)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    if(index < 0 || index > (TUPLE_ARRAY_SIZE - 1))
+    {
+        fprintf(stderr, "Invalid array access in Tuple with id %d\n", tuple->data[0].value);
+        return (Field){.value = 0, .valid = 0};
+    }
+    else 
+    {
+        Field ret = tuple->data[index];
+
+        if(ret.valid == 1) return ret;
+        else 
+        {
+            fprintf(stderr, "Accessed non-valid field in Tuple with id %d\n", tuple->data[0].value);
+            return (Field){.value = 0, .valid = 0};
+        }
+    }
+}
+
+Field getDataByLabel(Tuple* tuple, char index)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    char converted = toupper(index);
+    converted -= 65;
+
+    if(converted < 0 || converted > (TUPLE_ARRAY_SIZE - 1))
+    {
+        fprintf(stderr, "Invalid char index access in Tuple with id %d\n", tuple->data[0].value);
+        return (Field){.value = 0, .valid = 0};
+    }
+    else
+        return getDataByIndex(tuple, converted);
+}
+
+int getID(Tuple* tuple)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    return tuple->data[0].value;
+}
+
+int updateTupleField(Tuple* tuple, char index, int value)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+    
+    if(index == 'A' || index == 'a')
+    {
+        fprintf(stderr, "Cannot update _id field! Tuple %d\n", tuple->data[0].value);
+        return -1;
+    }
+
+    char converted = toupper(index);
+    converted -= 65;
+
+    if(converted < 1 || converted > (TUPLE_ARRAY_SIZE - 1))
+    {
+        fprintf(stderr, "Invalid array access in update Tuple with id %d\n", tuple->data[0].value);
+        return -1;
+    }
+    else 
+    {
+        tuple->data[converted].value = value;
+        tuple->data[converted].valid = 1;
+        return 0;
+    }
+}
+
+int deleteTupleField(Tuple* tuple, char index)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+    
+    if(index == 'A' || index == 'a')
+    {
+        fprintf(stderr, "Cannot delete _id field! Tuple %d\n", tuple->data[0].value);
+        return -1;
+    }
+
+    char converted = toupper(index);
+    converted -= 65;
+
+    if(converted < 1 || converted > (TUPLE_ARRAY_SIZE - 1))
+    {
+        fprintf(stderr, "Invalid array access in delete Tuple with id %d\n", tuple->data[0].value);
+        return -1;
+    }
+    else 
+    {
+        tuple->data[converted].valid = 0;
+        return 0;
+    }
+}
+
+int hasField(Tuple* tuple, char index)
+{
+    return (getDataByLabel(tuple, index).valid == 1);
+}
+
+#endif
