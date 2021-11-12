@@ -9,5 +9,7 @@ int main(void)
 {
     Table* t = buildTable("db.txt", "db");
     printTable(t);
+    removeTupleFromTable(t, 1);
+    printTable(t);
     return 0;
 }

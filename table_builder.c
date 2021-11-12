@@ -17,7 +17,7 @@ Table* buildTable(const char* fileName, const char* tableName)
 
     while(fgets(line, sizeof(line), datafile)) 
     {
-        fprintf(stderr, "Line read in: %s\n", line);
+        // fprintf(stderr, "Line read in: %s\n", line);
         
         size_t eol = strcspn(line, "\n");
         line[eol] = '\0';
@@ -32,7 +32,6 @@ Table* buildTable(const char* fileName, const char* tableName)
         else if(strlen(line) < 2)
         {
             fprintf(stderr, "Exiting after reading all lines!\n");
-
             break;
         }
 
@@ -60,6 +59,8 @@ Table* buildTable(const char* fileName, const char* tableName)
         // Add new tuple to table
         addTupleToTable(table, newTuple);
     }
+
+    fclose(datafile);
 
     return table;
 }

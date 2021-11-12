@@ -45,7 +45,7 @@ void printTuple(Tuple* tuple)
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
 
-    fprintf(stdout, "{\n\t_id(A): %d\n", tuple->data[0].value);
+    fprintf(stdout, "{\n\t_id: %d\n", tuple->data[0].value);
 
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
     {

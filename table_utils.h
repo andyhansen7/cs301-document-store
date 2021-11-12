@@ -80,5 +80,39 @@ int addTupleToTable(Table* table, Tuple* tuple)
     }
 }
 
+int removeTupleFromTable(Table* table, int tupleID)
+{
+    assert(table != NULL);
+    assert(tupleID >= 0);
+
+    Tuple* curr = table->_head;
+    Tuple* del = NULL;
+    int ret = -1;
+
+    while(curr != NULL)
+    {
+        if(getID(curr) == tupleID)
+        {
+            ret = 0;
+
+            Tuple* p = curr->_prev;
+            Tuple* n = curr->_next;
+
+            del = curr;
+
+            if(p != NULL) p->_next = n;
+            if(n != NULL) n->_prev = p;
+
+            table->_numFields--;
+
+            free(del);
+        }
+
+        curr = curr->_next;
+    }
+
+    return ret;
+}
+
 
 #endif
