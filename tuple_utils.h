@@ -11,6 +11,7 @@ typedef struct field_struct
 {
     int value;
     int valid;
+    int printable;
 } Field;
 
 // Tuple type
@@ -29,6 +30,7 @@ Tuple* getNewTuple(int id)
     Field keyField;
     keyField.value = id;
     keyField.valid = 1;
+    keyField.printable = 1;
     newTuple->data[0] = keyField;
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++) 
     {
@@ -40,7 +42,30 @@ Tuple* getNewTuple(int id)
     return newTuple;
 }
 
-void printTuple(Tuple* tuple, char* fieldList)
+void applyProjectionToTuple(Tuple* tuple, const char* projection)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
+    {
+        char label = i + 65;
+        if(strchr(projection, label) != NULL) tuple->data[i].printable = 1;
+    }     
+}
+
+void removeProjectionFromTuple(Tuple* tuple)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
+    {
+        tuple->data[i].printable = 1;
+    }     
+}
+
+void printTuple(Tuple* tuple)
 {
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
@@ -50,7 +75,7 @@ void printTuple(Tuple* tuple, char* fieldList)
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
     {
         char label = i + 65;
-        if(tuple->data[i].valid && strchr(fieldList, label) != NULL) 
+        if(tuple->data[i].valid == 1 && tuple->data[i].printable == 1) 
         {
             fprintf(stdout, "\t%c: %d\n", label, tuple->data[i].value);
         }

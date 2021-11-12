@@ -65,15 +65,11 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
         // Run find operation
         Table* result = filterTable(qb->_table, matchall, 'A', -1, newTableName);
 
-        printTable(result, all);
-
         // Security enforcement
         if(securityLevel != -1)
         {
             strcat(newTableName, "_sec");
             result = filterTable(result, lteq, 'Y', securityLevel, newTableName);
-
-            printTable(result, all);
         }
 
         // Run find conditions, one at a time
@@ -121,20 +117,17 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
                 fprintf(stderr, "Invalid operator: %s\n", operator);
                 return NULL;
             }
-
-            printTable(result, all);
         }
 
         // Create projection
-        if(strlen(queryLines[lineCount - 1]) > 1)
+        if(strlen(queryLines[lineCount - 1]) > 2)
         {
             strcat(newTableName, "_proj");
-            printTable(result, queryLines[lineCount - 1]);
+            applyProjectionToTable(result, queryLines[lineCount - 1]);
             return result;
         }
         else
         {
-            printTable(result, all);
             return result;
         }
         

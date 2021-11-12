@@ -34,7 +34,7 @@ Table* getNewTable(const char* tableName)
     return newTable;
 }
 
-void printTable(Table* table, char* fieldList)
+void printTable(Table* table)
 {
     assert(table != NULL);
 
@@ -43,7 +43,32 @@ void printTable(Table* table, char* fieldList)
     fprintf(stdout, "Printing table %s:\n", table->_tableName);
     while(curr != NULL)
     {
-        printTuple(curr, fieldList);
+        printTuple(curr);
+        curr = curr->_next;
+    }
+}
+
+void applyProjectionToTable(Table* table, const char* projection)
+{
+    assert(table != NULL);
+    assert(strlen(projection) != 0);
+
+    Tuple* curr = table->_head;
+    while(curr != NULL)
+    {
+        applyProjectionToTuple(curr, projection);
+        curr = curr->_next;
+    }
+}
+
+void removerojectionsForTable(Table* table)
+{
+    assert(table != NULL);
+
+    Tuple* curr = table->_head;
+    while(curr != NULL)
+    {
+        removeProjectionFromTuple(curr);
         curr = curr->_next;
     }
 }

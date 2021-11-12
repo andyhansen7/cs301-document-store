@@ -14,10 +14,10 @@ int main(void)
     strcpy(test, "FIND 9\nB < 300\nA B C D E Y;");
 
     Table* t = buildTable("db.txt", "db");
-    // printTable(t, all);
-
+    
     QueryBuilder* q = getNewQueryBuilder(t);
     Table* r = getTableFromQueryString(q, test);
+    printTable(r);
     
     return 0;
 }
