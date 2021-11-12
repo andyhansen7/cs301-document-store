@@ -51,7 +51,7 @@ Table* buildTable(const char* fileName, const char* tableName)
             // Add field to tuple
             updateTupleField(newTuple, key, val);
 
-            // // Get next values
+            // Get next values
             ptr_key = strtok(NULL, delim);
             ptr_val = strtok(NULL, delim);
         }

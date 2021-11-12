@@ -29,6 +29,13 @@ Table* filterTable(Table* table, int(*filterFunction)(Tuple*, char, int), char i
     return result;
 }
 
+int matchall(Tuple* tuple, char index, int value)
+{
+    assert(tuple != NULL);
+
+    return 1;
+}
+
 int eq(Tuple* tuple, char index, int value)
 {
     assert(tuple != NULL);
@@ -89,13 +96,13 @@ int gteq(Tuple* tuple, char index, int value)
         return 0;
 }
 
-int nnull(Tuple* tuple, char index, int value)
+int neq(Tuple* tuple, char index, int value)
 {
     assert(tuple != NULL);
 
     Field f = getDataByLabel(tuple, index);
     
-    if(f.valid == 1) 
+    if(f.valid == 1 && f.value != value) 
         return 1;
     else
         return 0;
