@@ -76,7 +76,7 @@ Field getDataByIndex(Tuple* tuple, int index)
         if(ret.valid == 1) return ret;
         else 
         {
-            fprintf(stderr, "Accessed non-valid field in Tuple with id %d\n", tuple->data[0].value);
+            // fprintf(stderr, "Accessed non-valid field in Tuple with id %d\n", tuple->data[0].value);
             return (Field){.value = 0, .valid = 0};
         }
     }
@@ -96,7 +96,9 @@ Field getDataByLabel(Tuple* tuple, char index)
         return (Field){.value = 0, .valid = 0};
     }
     else
+    {
         return getDataByIndex(tuple, converted);
+    }
 }
 
 int getID(Tuple* tuple)
@@ -163,6 +165,20 @@ int deleteTupleField(Tuple* tuple, char index)
 int hasField(Tuple* tuple, char index)
 {
     return (getDataByLabel(tuple, index).valid == 1);
+}
+
+Tuple* copyTuple(Tuple* original)
+{
+    assert(original != NULL);
+
+    Tuple* result = getNewTuple(getID(original));
+
+    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
+    {
+        result->data[i] = original->data[i];
+    }
+
+    return result;
 }
 
 #endif
