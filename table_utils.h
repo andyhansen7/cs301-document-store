@@ -34,7 +34,7 @@ Table* getNewTable(const char* tableName)
     return newTable;
 }
 
-void printTable(Table* table)
+void printTable(Table* table, char* fieldList)
 {
     assert(table != NULL);
 
@@ -43,7 +43,7 @@ void printTable(Table* table)
     fprintf(stdout, "Printing table %s:\n", table->_tableName);
     while(curr != NULL)
     {
-        printTuple(curr);
+        printTuple(curr, fieldList);
         curr = curr->_next;
     }
 }

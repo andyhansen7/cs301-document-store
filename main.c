@@ -8,10 +8,15 @@
 
 int main(void)
 {
+    char* all = displayAllFields();
+
     Table* t = buildTable("db.txt", "db");
-    printTable(t);
+    printTable(t, all);
     
     Table* f = filterTable(t, eq, 'B', 555, "f1");
-    printTable(f);
+    printTable(f, all);
+
+    Table* g = filterTable(t, lteq, 'Y', 2, "f2");
+    printTable(g, all);
     return 0;
 }

@@ -40,7 +40,7 @@ Tuple* getNewTuple(int id)
     return newTuple;
 }
 
-void printTuple(Tuple* tuple)
+void printTuple(Tuple* tuple, char* fieldList)
 {
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
@@ -50,7 +50,7 @@ void printTuple(Tuple* tuple)
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
     {
         char label = i + 65;
-        if(tuple->data[i].valid) 
+        if(tuple->data[i].valid && strchr(fieldList, label) != NULL) 
         {
             fprintf(stdout, "\t%c: %d\n", label, tuple->data[i].value);
         }

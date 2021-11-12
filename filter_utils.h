@@ -101,6 +101,25 @@ int nnull(Tuple* tuple, char index, int value)
         return 0;
 }
 
-int 
+char* displayAllFields()
+{
+    char* str = malloc(sizeof(char) * 27);
+    strcpy(str, "ABCDEFGHIJKLMNOPQRSTUVWYXZ");
+    return str;
+}
+
+char* displayAllButID()
+{
+    char* str = malloc(sizeof(char) * 26);
+    strcpy(str, "BCDEFGHIJKLMNOPQRSTUVWYXZ");
+    return str;
+}
+
+char* IDOnly()
+{
+    char* str = malloc(sizeof(char) * 2);
+    strcpy(str, "A");
+    return str;
+}
 
 #endif
