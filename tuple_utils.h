@@ -31,7 +31,7 @@ Tuple* getNewTuple(int id)
 {
     Tuple* newTuple = (Tuple*)malloc(sizeof(Tuple));
     newTuple->_printOrder = malloc(sizeof(char) * (TUPLE_ARRAY_SIZE + 1));
-    strcpy(newTuple->_printOrder, "");
+    strcpy(newTuple->_printOrder, "A");
 
     Field keyField;
     keyField.value = id;
@@ -58,8 +58,14 @@ void applyProjectionToTuple(Tuple* tuple, const char* projection)
     for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
     {
         char label = i + 65;
-        if(strchr(projection, label) != NULL) tuple->data[i].printable = 1;
-        else tuple->data[i].printable = 0;
+        if(strchr(projection, label) != NULL)
+        {
+            tuple->data[i].printable = 1;
+        }
+        else
+        {
+            tuple->data[i].printable = 0;
+        }
     }     
 }
 
@@ -97,8 +103,6 @@ void printTupleOrdered(Tuple* tuple)
 {
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
-
-    fprintf(stdout, "A: %d ", tuple->data[0].value);
 
     for(int i = 0; i < (strlen(tuple->_printOrder)); i++)
     {

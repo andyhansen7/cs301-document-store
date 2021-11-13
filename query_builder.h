@@ -30,6 +30,9 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
     char** queryLines = malloc(sizeof(char*) * MAX_QUERY_LINES);
     for(int i = 0; i < MAX_QUERY_LINES; i++) queryLines[i] = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
 
+    // Reset previous projections
+    removeProjectionsFromTable(qb->_table);
+
     int lineCount = 0;
     char delim[] = "\n";
 
@@ -129,14 +132,23 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
         }
 
         // Create projection
-        if(strlen(queryLines[lineCount - 1]) > 2)
+        if(!isalnum(queryLines[lineCount - 1][0]))
         {
+            fprintf(stderr, "Projection must contain at least one character: %s\n", queryLines[lineCount - 1]);
+            return result;
+        }
+        else if(strstr(queryLines[lineCount - 1], "X"))
+        {
+            removeProjectionsFromTable(result);
             strcat(newTableName, "_proj");
-            applyProjectionToTable(result, queryLines[lineCount - 1]);
+            applyProjectionToTable(result, all);
             return result;
         }
         else
         {
+            removeProjectionsFromTable(result);
+            strcat(newTableName, "_proj");
+            applyProjectionToTable(result, queryLines[lineCount - 1]);
             return result;
         }
         

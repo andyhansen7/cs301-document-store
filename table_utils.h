@@ -61,6 +61,8 @@ void printTableInOrder(Table* table)
         printTupleOrdered(curr);
         curr = curr->_next;
     }
+
+    fprintf(stdout, "\n");
 }
 
 char* serializeTable(Table* table)
