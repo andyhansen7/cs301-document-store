@@ -36,7 +36,7 @@ Table* getNewTable(const char* tableName)
     return newTable;
 }
 
-void printTable(Table* table, int printName)
+void printTablePretty(Table* table, int printName)
 {
     assert(table != NULL);
 
@@ -45,10 +45,24 @@ void printTable(Table* table, int printName)
     if(printName == 1) fprintf(stdout, "Printing table %s:\n", table->_tableName);
     while(curr != NULL)
     {
-        printTuple(curr);
+        printTuplePretty(curr);
         curr = curr->_next;
     }
 }
+void printTableInOrder(Table* table)
+{
+    assert(table != NULL);
+
+    fprintf(stdout, "\n");
+    
+    Tuple* curr = table->_head;
+    while(curr != NULL)
+    {
+        printTupleOrdered(curr);
+        curr = curr->_next;
+    }
+}
+
 
 char* serializeTable(Table* table)
 {

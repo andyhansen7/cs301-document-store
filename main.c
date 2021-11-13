@@ -59,38 +59,43 @@ int main(void)
     Table* response = NULL;
 
     // Main loop to get user input and run
-    int done = 1;
-    while(interrupted == 0)
-    {
-        // Print prompt if finished
-        if(done == 1)
-        {
-            fprintf(stdout, "Enter command: > ");
-            done = 0;
-        }
-
-        char input = (char)getchar();
-        strncat(query, &input, 1);
-
-        // Run query
-        if(input == ';')
-        {
-            done = 1;
-            response = getTableFromQueryString(qb, query);
-
-            if(response != NULL) printTable(response, 0);
-            else
-            {
-                fprintf(stdout, "Could not process query: %s\n", query);
-            }
-
-            // Reset query string
-            free(query);
-            query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
-            query[0] = '\0';
-        }
-
-    }
+//    int done = 1;
+//    while(interrupted == 0)
+//    {
+//        // Print prompt if finished
+//        if(done == 1)
+//        {
+//            fprintf(stdout, "Enter command: > ");
+//            done = 0;
+//        }
+//
+//        char input = (char)getchar();
+//        strncat(query, &input, 1);
+//
+//        // Run query
+//        if(input == ';')
+//        {
+//            done = 1;
+//            response = getTableFromQueryString(qb, query);
+//
+//            if(response != NULL)
+//            {
+//                if(response->_numFields != 0) printTable(response, 0);
+//                else fprintf(stdout, "{ }");
+//            }
+//            else
+//            {
+//                fprintf(stdout, "Could not process query: %s\n", query);
+//            }
+//
+//            // Reset query string
+//            free(query);
+//            query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
+//            query[0] = '\0';
+//        }
+//
+//    }
+    printTableInOrder(table);
 
     signalHandle(0);
 }

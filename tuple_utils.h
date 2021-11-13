@@ -19,6 +19,7 @@ typedef struct field_struct
 typedef struct tuple_struct
 {
     Field data[TUPLE_ARRAY_SIZE];
+    char* _printOrder;
     char _sortLabel;
 
     struct tuple_struct* _next;
@@ -29,12 +30,16 @@ typedef struct tuple_struct
 Tuple* getNewTuple(int id)
 {
     Tuple* newTuple = (Tuple*)malloc(sizeof(Tuple));
+    newTuple->_printOrder = malloc(sizeof(char) * (TUPLE_ARRAY_SIZE + 1));
+    strcpy(newTuple->_printOrder, "");
+
     Field keyField;
     keyField.value = id;
     keyField.valid = 1;
     keyField.printable = 1;
     newTuple->data[0] = keyField;
     newTuple->_sortLabel = 'A';
+
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++) 
     {
         newTuple->data[i] = (Field){.value = 0, .valid = 0};
@@ -69,7 +74,7 @@ void removeProjectionFromTuple(Tuple* tuple)
     }     
 }
 
-void printTuple(Tuple* tuple)
+void printTuplePretty(Tuple* tuple)
 {
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
@@ -86,6 +91,27 @@ void printTuple(Tuple* tuple)
     }
 
     fprintf(stdout, "}\n");
+}
+
+void printTupleOrdered(Tuple* tuple)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    fprintf(stdout, "A: %d ", tuple->data[0].value);
+
+    for(int i = 0; i < (strlen(tuple->_printOrder)); i++)
+    {
+        char label = toupper(tuple->_printOrder[i]);
+        char index = label - 65;
+
+        if(tuple->data[index].valid == 1 && tuple->data[index].printable == 1)
+        {
+            fprintf(stdout, "%c: %d ", label, tuple->data[index].value);
+        }
+    }
+
+    fprintf(stdout, "\n");
 }
 
 char* serializeTuple(Tuple* tuple)
@@ -176,8 +202,8 @@ int updateTupleField(Tuple* tuple, char index, int value)
         return -1;
     }
 
-    char converted = toupper(index);
-    converted -= 65;
+    char label = (char)(toupper(index));
+    char converted = (char)(label - 65);
 
     if(converted < 1 || converted > (TUPLE_ARRAY_SIZE - 1))
     {
@@ -189,6 +215,9 @@ int updateTupleField(Tuple* tuple, char index, int value)
         tuple->data[converted].value = value;
         tuple->data[converted].valid = 1;
         tuple->data[converted].printable = 1;
+
+        strncat(tuple->_printOrder, &label, 1);
+
         return 0;
     }
 }
@@ -229,6 +258,8 @@ Tuple* copyTuple(Tuple* original)
     assert(original != NULL);
 
     Tuple* result = getNewTuple(getID(original));
+    result->_printOrder = original->_printOrder;
+    result->_sortLabel = original->_sortLabel;
 
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
     {
