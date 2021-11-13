@@ -128,18 +128,20 @@ char* serializeTuple(Tuple* tuple)
     ret[0] = '\0';
     temp[0] = '\0';
 
-    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
+    for(int i = 1; i < (strlen(tuple->_printOrder)); i++)
     {
-        char label = i + 65;
-        if(tuple->data[i].valid == 1 && tuple->data[i].printable == 1)
+        char label = toupper(tuple->_printOrder[i]);
+        char index = label - 65;
+
+        if(tuple->data[index].valid == 1)
         {
-            sprintf(temp, "%c: %d ", label, tuple->data[i].value);
+            sprintf(temp, "%c: %d ", label, tuple->data[index].value);
             strcat(ret, temp);
             temp[0] = '\0';
         }
     }
-    temp = "\n";
-    strcat(ret, temp);
+    char newline = '\n';
+    strncat(ret, &newline, 1);
 
     return ret;
 }
