@@ -44,8 +44,11 @@ int main(void)
     filepath = malloc(sizeof(char) * MAX_FILEPATH_LENGTH);
     char* dbname = malloc(sizeof(char) * MAX_DB_NAME_LENGTH);
     fprintf(stdout, "CS301 Document Store - Andy Hansen\n");
-    fprintf(stdout, "Enter a filepath to load db: > ");
+    fprintf(stdout, "Enter a filepath to load db or \'.\' to load default path: > ");
     fscanf(stdin, "%s", filepath);
+
+    // If zero length, use default path
+    if(strcmp(filepath, ".") == 0) strcpy(filepath, "db.txt");
 
     if(!access(filepath, F_OK|R_OK|W_OK ) == 0 )
     {
@@ -54,7 +57,7 @@ int main(void)
     }
 
     // Load db name from user
-    fprintf(stdout, "Enter a fdb name: > ");
+    fprintf(stdout, "Enter a db name: > ");
     fscanf(stdin, "%s", dbname);
 
     // Load table and query builder
