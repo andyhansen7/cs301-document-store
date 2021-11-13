@@ -80,9 +80,17 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
 
         for(int i = 1; i < (lineCount - 1); i++)
         {
+            int matchAll = 0;
             sscanf(queryLines[i], "%c %s %d", &label, operator, &value);
 
             // Determine operation
+            if(i == 1 && strchr(queryLines[i], 'Z') != NULL)
+            {
+                matchAll = 1;
+                strcat(newTableName, "_all");
+                result = filterTable(result, matchall, 'A', -1, newTableName);
+                break;
+            }
             if(strstr(operator, "<="))
             {
                 strcat(newTableName, "_lteq");
