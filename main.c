@@ -24,8 +24,7 @@ void signalHandle(int code)
     fprintf(stdout, "\n");
 
     // Dump to file
-    removerojectionsForTable(table);
-//    fprintf(stdout, "%s\n", serializeTable(table));
+    removeProjectionsFromTable(table);
     char* serialized = serializeTable(table);
     FILE* outfile = fopen(filepath, "w");
     fputs(serialized, outfile);

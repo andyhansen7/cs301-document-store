@@ -3,6 +3,7 @@
 
 #include "filter_utils.h"
 #include "table_utils.h"
+#include "table_sort.h"
 
 #define MAX_QUERY_LINES 100
 #define MAX_QUERY_LINE_LENGTH 50
@@ -134,7 +135,50 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
     }
     else if(strstr(queryText, "SORT"))
     {
-        return NULL;
+        if(lineCount != 3)
+        {
+            fprintf(stdout, "Sort given the wrong number of parameters, 3 needed, %d provided\n", lineCount);
+            return NULL;
+        }
+
+        // Run find operation
+        Table* result = filterTable(qb->_table, matchall, 'A', -1, newTableName);
+
+        // Security enforcement
+        if(securityLevel != -1)
+        {
+            strcat(newTableName, "_sec");
+            result = filterTable(result, lteq, 'Y', securityLevel, newTableName);
+        }
+
+        // Load sort range
+        char label = ' ';
+        int value = 0;
+        sscanf(queryLines[1], "%c: %d", &label, &value);
+        if(value != 1 && value != -1)
+        {
+            fprintf(stdout, "Sort given invalid sort direction: %d\n", value);
+            return NULL;
+        }
+
+        // Run sort
+        strcat(newTableName, "_valid");
+        result = filterTable(result, fieldexists, label, value, newTableName);
+
+        strcat(newTableName, "_sorted");
+        result = sortTable(result, label, value);
+
+        // Create projection
+        if(strlen(queryLines[lineCount - 1]) > 2)
+        {
+            strcat(newTableName, "_proj");
+            applyProjectionToTable(result, queryLines[lineCount - 1]);
+            return result;
+        }
+        else
+        {
+            return result;
+        }
     }
     else if(strstr(queryText, "COUNT"))
     {

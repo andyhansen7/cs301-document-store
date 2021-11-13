@@ -49,7 +49,8 @@ Table* buildTable(char* fileName, char* tableName)
             int val = atoi(ptr_val);
 
             // Add field to tuple
-            updateTupleField(newTuple, key, val);
+            if(key != 'A' && key != 'a')
+                updateTupleField(newTuple, key, val);
 
             // Get next values
             ptr_key = strtok(NULL, delim);

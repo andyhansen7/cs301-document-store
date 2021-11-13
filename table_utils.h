@@ -81,7 +81,7 @@ void applyProjectionToTable(Table* table, const char* projection)
     }
 }
 
-void removerojectionsForTable(Table* table)
+void removeProjectionsFromTable(Table* table)
 {
     assert(table != NULL);
 
@@ -159,5 +159,11 @@ int removeTupleFromTable(Table* table, int tupleID)
     return ret;
 }
 
+int getTupleCount(Table* table)
+{
+    assert(table != NULL);
+
+    return table->_numFields;
+}
 
 #endif

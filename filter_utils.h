@@ -108,6 +108,18 @@ int neq(Tuple* tuple, char index, int value)
         return 0;
 }
 
+int fieldexists(Tuple* tuple, char index, int value)
+{
+    assert(tuple != NULL);
+
+    Field f = getDataByLabel(tuple, index);
+
+    if(f.valid == 1)
+        return 1;
+    else
+        return 0;
+}
+
 char* displayAllFields()
 {
     char* str = malloc(sizeof(char) * 27);

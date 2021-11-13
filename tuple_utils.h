@@ -19,6 +19,7 @@ typedef struct field_struct
 typedef struct tuple_struct
 {
     Field data[TUPLE_ARRAY_SIZE];
+    char _sortLabel;
 
     struct tuple_struct* _next;
     struct tuple_struct* _prev;
@@ -33,6 +34,7 @@ Tuple* getNewTuple(int id)
     keyField.valid = 1;
     keyField.printable = 1;
     newTuple->data[0] = keyField;
+    newTuple->_sortLabel = 'A';
     for(int i = 1; i < TUPLE_ARRAY_SIZE; i++) 
     {
         newTuple->data[i] = (Field){.value = 0, .valid = 0};
@@ -185,6 +187,7 @@ int updateTupleField(Tuple* tuple, char index, int value)
     {
         tuple->data[converted].value = value;
         tuple->data[converted].valid = 1;
+        tuple->data[converted].printable = 1;
         return 0;
     }
 }
