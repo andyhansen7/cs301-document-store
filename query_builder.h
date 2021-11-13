@@ -182,7 +182,32 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
     }
     else if(strstr(queryText, "COUNT"))
     {
-        return NULL;
+        if(lineCount > 1)
+        {
+            fprintf(stdout, "Count given the wrong number of parameters, 1 needed, %d provided\n", lineCount);
+            return NULL;
+        }
+
+        // Run find operation
+        Table* result = filterTable(qb->_table, matchall, 'A', -1, newTableName);
+
+        // Security enforcement
+        if(securityLevel != -1)
+        {
+            strcat(newTableName, "_sec");
+            result = filterTable(result, lteq, 'Y', securityLevel, newTableName);
+        }
+
+        // Get count
+        int count = getTupleCount(result);
+
+        Table* res = getNewTable("res_count");
+        Tuple* c = getNewTuple(0);
+        updateTupleField(c, 'C', count);
+        addTupleToTable(res, c);
+        applyProjectionToTable(res, "C");
+
+        return res;
     }
     else
     {

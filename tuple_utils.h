@@ -54,6 +54,7 @@ void applyProjectionToTuple(Tuple* tuple, const char* projection)
     {
         char label = i + 65;
         if(strchr(projection, label) != NULL) tuple->data[i].printable = 1;
+        else tuple->data[i].printable = 0;
     }     
 }
 
@@ -97,7 +98,7 @@ char* serializeTuple(Tuple* tuple)
     ret[0] = '\0';
     temp[0] = '\0';
 
-    for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
+    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
     {
         char label = i + 65;
         if(tuple->data[i].valid == 1 && tuple->data[i].printable == 1)

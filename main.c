@@ -31,7 +31,7 @@ void signalHandle(int code)
     fclose(outfile);
 
     // Exit
-    exit(0);
+    exit(code);
 }
 
 int main(void)
@@ -44,6 +44,12 @@ int main(void)
     fprintf(stdout, "CS301 Document Store - Andy Hansen\n");
     fprintf(stdout, "Enter a filepath to load db: > ");
     fscanf(stdin, "%s", filepath);
+
+    if(!access(filepath, F_OK|R_OK|W_OK ) == 0 )
+    {
+        fprintf(stderr, "Provided file does not exist: %s\n", filepath);
+        exit(-1);
+    }
 
     // Load table and query builder
     table = buildTable(filepath, "db");
@@ -70,8 +76,6 @@ int main(void)
         if(input == ';')
         {
             done = 1;
-
-//            fprintf(stdout, "%s\n", query);
             response = getTableFromQueryString(qb, query);
 
             if(response != NULL) printTable(response, 0);
@@ -87,6 +91,6 @@ int main(void)
         }
 
     }
-    
-    exit(0);
+
+    signalHandle(0);
 }
