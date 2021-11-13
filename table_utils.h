@@ -8,6 +8,8 @@
 
 #include "tuple_utils.h"
 
+#define MAX_FILE_SIZE 1000000
+
 /// Table class
 typedef struct table_struct
 {
@@ -34,18 +36,36 @@ Table* getNewTable(const char* tableName)
     return newTable;
 }
 
-void printTable(Table* table)
+void printTable(Table* table, int printName)
 {
     assert(table != NULL);
 
     Tuple* curr = table->_head;
 
-    fprintf(stdout, "Printing table %s:\n", table->_tableName);
+    if(printName == 1) fprintf(stdout, "Printing table %s:\n", table->_tableName);
     while(curr != NULL)
     {
         printTuple(curr);
         curr = curr->_next;
     }
+}
+
+char* serializeTable(Table* table)
+{
+    assert(table != NULL);
+
+    char* output = malloc(sizeof(char) * MAX_FILE_SIZE);
+    output[0] = '\0';
+
+    Tuple* curr = table->_head;
+    while(curr != NULL)
+    {
+        strcat(output, serializeTuple(curr));
+        curr = curr->_next;
+    }
+
+
+    return output;
 }
 
 void applyProjectionToTable(Table* table, const char* projection)

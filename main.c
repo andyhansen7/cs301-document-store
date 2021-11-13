@@ -1,5 +1,6 @@
 // STL
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 
@@ -8,42 +9,82 @@
 #include "filter_utils.h"
 #include "query_builder.h"
 
+#define MAX_FILEPATH_LENGTH 100
+
 int interrupted = 0;
+Table* table;
+char* filepath;
 
 void signalHandle(int code)
 {
+    // Kill loop
     interrupted = 1;
+
+    // Terminal cleanup
+    fprintf(stdout, "\n");
+
+    // Dump to file
+    removerojectionsForTable(table);
+//    fprintf(stdout, "%s\n", serializeTable(table));
+    char* serialized = serializeTable(table);
+    FILE* outfile = fopen(filepath, "w");
+    fputs(serialized, outfile);
+    fclose(outfile);
+
+    // Exit
     exit(0);
 }
 
 int main(void)
 {
+    // Signal handler
     signal(SIGINT, signalHandle);
-    // strcpy(test, "FIND 9\nB < 300\nA B C D E Y;");
 
-    Table* tab = buildTable("db.txt", "db");
-    QueryBuilder* qb = getNewQueryBuilder(t);
+    // Load filepath from user
+    filepath = malloc(sizeof(char) * MAX_FILEPATH_LENGTH);
+    fprintf(stdout, "CS301 Document Store - Andy Hansen\n");
+    fprintf(stdout, "Enter a filepath to load db: > ");
+    fscanf(stdin, "%s", filepath);
+
+    // Load table and query builder
+    table = buildTable(filepath, "db");
+    QueryBuilder* qb = getNewQueryBuilder(table);
     char* query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
+    query[0] = '\0';
     Table* response = NULL;
 
+    // Main loop to get user input and run
+    int done = 1;
     while(interrupted == 0)
     {
-        char input = getchar();
+        // Print prompt if finished
+        if(done == 1)
+        {
+            fprintf(stdout, "Enter command: > ");
+            done = 0;
+        }
+
+        char input = (char)getchar();
         strncat(query, &input, 1);
 
         // Run query
         if(input == ';')
         {
+            done = 1;
+
+//            fprintf(stdout, "%s\n", query);
             response = getTableFromQueryString(qb, query);
-            
-            if(response != NULL) printTable(response);
-            else 
+
+            if(response != NULL) printTable(response, 0);
+            else
             {
                 fprintf(stdout, "Could not process query: %s\n", query);
             }
 
+            // Reset query string
             free(query);
             query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
+            query[0] = '\0';
         }
 
     }

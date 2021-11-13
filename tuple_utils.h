@@ -2,6 +2,7 @@
 #define _TUPLE_UTILS_
 
 #define TUPLE_ARRAY_SIZE 26
+#define MAX_TUPLE_LENGTH 1000
 
 #include <string.h>
 #include <ctype.h>
@@ -70,9 +71,9 @@ void printTuple(Tuple* tuple)
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
 
-    fprintf(stdout, "{\n\t_id: %d\n", tuple->data[0].value);
+    fprintf(stdout, "{\n");
 
-    for(int i = 1; i < TUPLE_ARRAY_SIZE; i++)
+    for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
     {
         char label = i + 65;
         if(tuple->data[i].valid == 1 && tuple->data[i].printable == 1) 
@@ -83,6 +84,33 @@ void printTuple(Tuple* tuple)
 
     fprintf(stdout, "}\n");
 }
+
+char* serializeTuple(Tuple* tuple)
+{
+    assert(tuple != NULL);
+    assert(tuple->data[0].valid == 1);
+
+    char* ret = malloc(sizeof(char) * MAX_TUPLE_LENGTH);
+    char* temp = malloc(sizeof(char) * MAX_TUPLE_LENGTH);
+    ret[0] = '\0';
+    temp[0] = '\0';
+
+    for(int i = 0; i < TUPLE_ARRAY_SIZE; i++)
+    {
+        char label = i + 65;
+        if(tuple->data[i].valid == 1 && tuple->data[i].printable == 1)
+        {
+            sprintf(temp, "%c: %d ", label, tuple->data[i].value);
+            strcat(ret, temp);
+            temp[0] = '\0';
+        }
+    }
+    temp = "\n";
+    strcat(ret, temp);
+
+    return ret;
+}
+
 
 Field getDataByIndex(Tuple* tuple, int index)
 {

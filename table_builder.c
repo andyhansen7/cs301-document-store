@@ -6,7 +6,7 @@
 
 #define MAX_TUPLE_LENGTH 1000
 
-Table* buildTable(const char* fileName, const char* tableName)
+Table* buildTable(char* fileName, char* tableName)
 {
     // Open file
     FILE* datafile = fopen(fileName, "r");
@@ -31,7 +31,7 @@ Table* buildTable(const char* fileName, const char* tableName)
 
         else if(strlen(line) < 2)
         {
-            fprintf(stderr, "Exiting after reading all lines!\n");
+//            fprintf(stderr, "Exiting after reading all lines!\n");
             break;
         }
 
