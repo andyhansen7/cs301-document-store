@@ -54,7 +54,7 @@ void printTableInOrder(Table* table)
     assert(table != NULL);
 
     fprintf(stdout, "\n");
-    
+
     Tuple* curr = table->_head;
     while(curr != NULL)
     {
@@ -62,7 +62,6 @@ void printTableInOrder(Table* table)
         curr = curr->_next;
     }
 }
-
 
 char* serializeTable(Table* table)
 {

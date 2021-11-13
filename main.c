@@ -10,6 +10,7 @@
 #include "query_builder.h"
 
 #define MAX_FILEPATH_LENGTH 100
+#define MAX_DB_NAME_LENGTH 20
 
 int interrupted = 0;
 Table* table;
@@ -41,6 +42,7 @@ int main(void)
 
     // Load filepath from user
     filepath = malloc(sizeof(char) * MAX_FILEPATH_LENGTH);
+    char* dbname = malloc(sizeof(char) * MAX_DB_NAME_LENGTH);
     fprintf(stdout, "CS301 Document Store - Andy Hansen\n");
     fprintf(stdout, "Enter a filepath to load db: > ");
     fscanf(stdin, "%s", filepath);
@@ -51,50 +53,54 @@ int main(void)
         exit(-1);
     }
 
+    // Load db name from user
+    fprintf(stdout, "Enter a fdb name: > ");
+    fscanf(stdin, "%s", dbname);
+
     // Load table and query builder
-    table = buildTable(filepath, "db");
+    table = buildTable(filepath, dbname);
     QueryBuilder* qb = getNewQueryBuilder(table);
     char* query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
     query[0] = '\0';
     Table* response = NULL;
 
     // Main loop to get user input and run
-//    int done = 1;
-//    while(interrupted == 0)
-//    {
-//        // Print prompt if finished
-//        if(done == 1)
-//        {
-//            fprintf(stdout, "Enter command: > ");
-//            done = 0;
-//        }
-//
-//        char input = (char)getchar();
-//        strncat(query, &input, 1);
-//
-//        // Run query
-//        if(input == ';')
-//        {
-//            done = 1;
-//            response = getTableFromQueryString(qb, query);
-//
-//            if(response != NULL)
-//            {
-//                if(response->_numFields != 0) printTable(response, 0);
-//                else fprintf(stdout, "{ }");
-//            }
-//            else
-//            {
-//                fprintf(stdout, "Could not process query: %s\n", query);
-//            }
-//
-//            // Reset query string
-//            free(query);
-//            query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
-//            query[0] = '\0';
-//        }
-//
-//    }
+    int done = 1;
+    while(interrupted == 0)
+    {
+        // Print prompt if finished
+        if(done == 1)
+        {
+            fprintf(stdout, "%s: > ", dbname);
+            done = 0;
+        }
+
+        char input = (char)getchar();
+        strncat(query, &input, 1);
+
+        // Run query
+        if(input == ';')
+        {
+            done = 1;
+            response = getTableFromQueryString(qb, query);
+
+            if(response != NULL)
+            {
+                if(response->_numFields != 0) printTableInOrder(response);
+                else fprintf(stdout, "\n{ No results }\n");
+            }
+            else
+            {
+                fprintf(stdout, "Could not process query: %s\n", query);
+            }
+
+            // Reset query string
+            free(query);
+            query = malloc(sizeof(char) * MAX_QUERY_LINE_LENGTH);
+            query[0] = '\0';
+        }
+
+    }
     printTableInOrder(table);
 
     signalHandle(0);
