@@ -155,9 +155,9 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
     }
     else if(strstr(queryText, "SORT"))
     {
-        if(lineCount != 3)
+        if(lineCount < 2)
         {
-            fprintf(stdout, "Sort given the wrong number of parameters, 3 needed, %d provided\n", lineCount);
+            fprintf(stdout, "Sort given the wrong number of parameters, at least 2 needed, %d provided\n", lineCount);
             return NULL;
         }
 
@@ -174,7 +174,7 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
         // Load sort range
         char label = ' ';
         int value = 0;
-        sscanf(queryLines[1], "%c: %d", &label, &value);
+        sscanf(queryLines[1], "%c = %d", &label, &value);
         if(value != 1 && value != -1)
         {
             fprintf(stdout, "Sort given invalid sort direction: %d\n", value);
@@ -189,16 +189,17 @@ Table* getTableFromQueryString(QueryBuilder* qb, char* queryString)
         result = sortTable(result, label, value);
 
         // Create projection
-        if(strlen(queryLines[lineCount - 1]) > 2)
-        {
-            strcat(newTableName, "_proj");
-            applyProjectionToTable(result, queryLines[lineCount - 1]);
-            return result;
-        }
-        else
-        {
-            return result;
-        }
+//        if(strlen(queryLines[lineCount - 1]) > 2)
+//        {
+//            strcat(newTableName, "_proj");
+//            applyProjectionToTable(result, queryLines[lineCount - 1]);
+//            return result;
+//        }
+//        else
+//        {
+//            return result;
+//        }
+        return result;
     }
     else if(strstr(queryText, "COUNT"))
     {
