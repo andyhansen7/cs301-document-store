@@ -104,6 +104,8 @@ void printTupleOrdered(Tuple* tuple)
     assert(tuple != NULL);
     assert(tuple->data[0].valid == 1);
 
+    int fieldsPrinted = 0;
+
     for(int i = 0; i < (strlen(tuple->_printOrder)); i++)
     {
         char label = toupper(tuple->_printOrder[i]);
@@ -112,10 +114,14 @@ void printTupleOrdered(Tuple* tuple)
         if(tuple->data[index].valid == 1 && tuple->data[index].printable == 1)
         {
             fprintf(stdout, "%c: %d ", label, tuple->data[index].value);
+            fieldsPrinted++;
         }
     }
 
-    fprintf(stdout, "\n");
+    if(fieldsPrinted != 0)
+    {
+        fprintf(stdout, "\n");
+    }
 }
 
 char* serializeTuple(Tuple* tuple)
